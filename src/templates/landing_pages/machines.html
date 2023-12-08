@@ -1,0 +1,56 @@
+<!-- Inherits from base.html (parent template) -->
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<h1>Machines</h1>
+<!-- Display existing recipes in a table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Machine Name</th>
+            <th scope="col">Machine Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Date added</th>
+            <th scope="col">Last updated</th>
+            <th scope="col">Actions</th>
+    </thead>
+    <tbody>
+        {% for machine in machines %}
+            <tr>
+                <td>{{ machine.machine_name }}</td>
+                <td>{{ machine.machine_type }}</td>
+                <td>{{ machine.status }}</td>
+                <td>{{ machine.timestamp|date:"F d, Y H:i" }}</td>
+                <td>{{ machine.updated|date:"F d, Y H:i" }}</td>
+                <td>
+                    {% if perms.landing_pages.change_machines %}
+                    <a href="{% url 'edit_machine' machine.id %}">Edit</a>
+                    {% endif %}
+                    {% if perms.landing_pages.delete_machines %}
+                    <a href="{% url 'delete_machine' machine.id %}">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if perms.landing_pages.add_machines %}
+<!-- Form for adding new recipes or editing existing recipes -->
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="input-group mb-3">
+            <span class="input-group-text" style="min-width: 140px;">{{ field.label_tag }}</span>
+            {{ field }}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Add Machine</button>
+</form>
+{% endif %}
+{% endblock %}
+

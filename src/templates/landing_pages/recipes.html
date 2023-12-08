@@ -1,0 +1,70 @@
+ <!-- Inherits from base.html (parent template) -->
+ {% extends "base.html" %}
+
+ {% block title %}
+ {{ title }}
+ {% endblock %}
+ 
+
+{% block content %}
+<h1>Recipes</h1>
+
+<!-- Display existing recipes in a table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Recipe Name</th>
+            <th scope="col">Machine</th>
+            <th scope="col">Duration</th>       
+            <th scope="col">Date added</th>
+            <th scope="col">Last updated</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for recipe in recipes %}
+            <tr>
+                <td>{{ recipe.recipe_name }}</td>
+                <td>{{ recipe.machine }}</td>
+                <td>{{ recipe.machine_duration }}</td>
+                <td>{{ recipe.timestamp|date:"F d, Y H:i" }}</td>
+                <td>{{ recipe.updated|date:"F d, Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'view_recipe_ingredients' recipe.id %}">View Ingredients</a>
+                    {% if perms.landing_pages.change_recipes %}
+                    <a href="{% url 'edit_recipe' recipe.id %}">Edit</a>
+                    {% endif %}
+                    {% if perms.landing_pages.delete_recipes %}
+                    <a href="{% url 'delete_recipe' recipe.id %}">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Form for adding new recipes or editing existing recipes -->
+{% if perms.landing_pages.add_recipes %}
+<form method="post" action="{% url 'recipe_page' %}">
+    {% csrf_token %}
+    {% for field in recipe_form %}
+        <div class="input-group mb-3">
+            <span class="input-group-text" style="min-width: 120px;">{{ field.label_tag }}</span>
+            {{ field }}
+        </div>
+    {% endfor %}
+    {% for form in formset %}
+        <div class="row-m3">
+            {% for element in form %}
+                <div class="input-group">
+                    <span class="input-group-text" style="min-width: 120px;">{{ element.label_tag }}</span>
+                    {{ element }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">Add Recipe</button>
+</form>
+{% endif %}
+{% endblock %}

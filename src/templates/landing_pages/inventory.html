@@ -1,0 +1,73 @@
+ <!-- Inherits from base.html (parent template) -->
+ {% extends "base.html" %}
+
+ {% block title %}
+ {{ title }}
+ {% endblock %}
+ 
+
+{% block content %}
+<h1>Inventory</h1>
+<h2>Ingredients</h2>
+<!-- Display ingredients in a table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Ingredient Name</th>
+            <th scope="col">Quantity in stock</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.ingredient_name }}</td>
+                <td>{{ ingredient.stock_quantity }}</td>
+                <td>{{ ingredient.unit }}</td>
+                <td>
+                    {% if perms.landing_pages.change_ingredients %}
+                    <a href="{% url 'edit_ingredient' ingredient.id %}">Edit</a>
+                    {% endif %}
+                    {% if perms.landing_pages.delete_ingredients %}
+                    <a href="{% url 'delete_ingredient' ingredient.id %}">Delete</a>
+                    {% endif %}
+                </td>
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if perms.landing_pages.add_ingredients %}
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="input-group mb-3">
+            <span class="input-group-text" style="min-width: 120px;">{{ field.label_tag }}</span>
+            {{ field }}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success" style="margin-bottom: 20px;">Add Ingredient</button>
+</form>
+{% endif %}
+
+<h2>Products</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity in stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product, quantity in product_dict.items %}
+            <tr>
+                <td>{{ product }}</td>
+                <td>{{ quantity }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

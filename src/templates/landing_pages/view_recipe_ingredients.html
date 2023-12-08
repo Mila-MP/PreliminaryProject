@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p>Ingredients for {{ recipe.recipe_name }}:</p>
+    <ul>
+        {% for ingredient in ingredients %}
+            <li>{{ ingredient.quantity }} {{ ingredient.ingredient.unit }} of {{ ingredient.ingredient.ingredient_name }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'recipe_page' %}">Back to Recipes</a>
+{% endblock %}
