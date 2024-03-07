@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'inventory',
         'USER': 'root',
-        'PASSWORD': 'Il8S741v*',
+        'PASSWORD': '',
         'HOST': 'localhost',  # Set to the appropriate MySQL server if not local
         'PORT': '3306',       # MySQL default port
     }   
